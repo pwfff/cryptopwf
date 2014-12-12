@@ -9,7 +9,7 @@ object Challenge3 {
 
     val allBytes = (0 to 255).view.map(_.toByte)
 
-    val scores = allBytes map(b =>
+    val scores = allBytes.par.map(b =>
       (b, bytes.map(_ ^ b).count(_.toChar.isASCIILetter)))
 
     val best = scores.maxBy(_._2)._1
