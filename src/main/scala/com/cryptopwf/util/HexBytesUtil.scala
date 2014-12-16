@@ -15,10 +15,6 @@ object HexBytesUtil {
   }
 
   def hammingDistance(a: String, b: String): Int = {
-    /*
-    this doesn't work STEVEFRENCH
-    (a zip b).map(JavaInteger.bitCount(_^_)).sum
-    */
-    (a zip b).foldLeft(0){case (s, (i, j)) => JavaInteger.bitCount(i^j) + s}
+    (a zip b).map(t => JavaInteger.bitCount(t._1 ^ t._2)).sum
   }
 }
