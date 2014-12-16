@@ -23,7 +23,6 @@ object FrequencyAnalysis {
     }.map {
       case (Some(a), Some(b)) => math.abs(a - b)
       case (Some(a), None) => a
-      case (None, Some(b)) => 1
       case _ => 1
     }.sum
   }
