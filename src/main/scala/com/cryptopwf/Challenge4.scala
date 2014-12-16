@@ -1,12 +1,12 @@
 package com.cryptopwf
 
 import com.cryptopwf.util.HexBytesUtil
-import com.cryptopwf.util.ASCII._
+import com.cryptopwf.util.FrequencyAnalysis
 
 object Challenge4 {
   def decrypt(hexes: List[String]): String = {
-    val decrypted = hexes.par.map(Challenge3.decrypt)
+    val candidates = hexes.par.map(Challenge3.decrypt)
 
-    decrypted.maxBy(_.count(_.isASCIILetter))
+    FrequencyAnalysis.mostEnglishText(candidates)
   }
 }
