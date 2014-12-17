@@ -1,5 +1,5 @@
 /*
- * stolen from b0lt on IRC because he typed it before I did...
+ * stolen from b0lt on IRC because he's smarter than me
  */
 package com.cryptopwf.util
 
