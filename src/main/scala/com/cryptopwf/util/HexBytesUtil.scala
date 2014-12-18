@@ -17,4 +17,8 @@ object HexBytesUtil {
   def hammingDistance(a: String, b: String): Int = {
     (a zip b).map(t => JavaInteger.bitCount(t._1 ^ t._2)).sum
   }
+
+  def normalizedHammingDistance(a: String, b: String): Double = {
+    hammingDistance(a, b).toDouble / math.min(a.length, b.length)
+  }
 }

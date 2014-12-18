@@ -10,43 +10,44 @@ object Challenge6 {
   def breakRepeatingXOR(base64ciphertext: String, keysizes: Range = (2 to 40)): String = {
     val ciphertext = decoder.decodeBuffer(base64ciphertext)
 
-    //val keysizeGuesses = keysizes.sortBy(-normalizedEditDistance(ciphertext.mkString, _)).take(10)
+    // use the average normalized hamming distance of adjacent blocks to guess the keysize
+    val keysizeGuesses = keysizes.sortBy(normalizedEditDistance(ciphertext.mkString, _)) //.take(10)
 
-    //keysizeGuesses.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
-    keysizes.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
+    // brute-force decrypt each byte in the key for each likely keysize, take the most Englishy one
+    keysizeGuesses.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
   }
 
   def tryKeySize(ciphertext: IndexedSeq[Byte], keysize: Int): String = {
+    // break into chunks and pad with null bytes for the transpose
     val blocks = ciphertext.grouped(keysize).map(_.padTo(keysize, 0.toByte)).toIndexedSeq
-    val tBlocks = blocks.transpose
-    val decryptedBlocks = tBlocks.map(Challenge3.decrypt)
-    decryptedBlocks.transpose.map(_.mkString).mkString
+
+    // transpose, remove null bytes
+    val tBlocks = blocks.transpose.map {
+      case c if (c.last == 0) => c.dropRight(1)
+      case c => c
+    }
+
+    // brute-force decrypt each byte in the key
+    val decryptedBlocks = tBlocks.par.map(Challenge3.decrypt)
+
+    // pad for second transpose
+    val paddedDecryptedBlocks = decryptedBlocks.map(_.padTo(math.ceil(ciphertext.length.toDouble / keysize).toInt, '\0'))
+
+    // transpose and strip null bytes
+    paddedDecryptedBlocks.transpose.map(_.mkString).mkString.replaceAll("\0", "")
   }
 
   def normalizedEditDistance(ciphertext: String, keysize: Int): Double = {
-    val hammingDistances = ciphertext.grouped(keysize).grouped(2).map {
-      case g if (g.length > 1) => Some(HexBytesUtil.hammingDistance(g(0), g(1)).toDouble / keysize)
-      case _ => None
-    }.toIndexedSeq.flatten
+    // group ciphertext into blocks of keysize length
+    val blocks = ciphertext.grouped(keysize).toIndexedSeq
 
-    (hammingDistances.sum.toDouble / hammingDistances.length) / keysize
+    // get adjacent blocks
+    val adjacentBlocks = (blocks.drop(1) zip blocks).drop(1)
 
-    val normalized = hammingDistances.sum / hammingDistances.length
-    println(normalized)
-    normalized
+    // for each adjacent pair of blocks, calculate the normalized hamming distance
+    val hammingDistances = adjacentBlocks.map(t => HexBytesUtil.normalizedHammingDistance(t._1, t._2)).toIndexedSeq
 
-    /*
-    if (ciphertext.length < keysize * 4) throw new IllegalArgumentException("ciphertext must have at least four blocks of `keysize` length")
-
-    val block1: String = ciphertext.slice(0, keysize)
-    val block2: String = ciphertext.slice(keysize, keysize * 2)
-    val block3: String = ciphertext.slice(keysize * 2, keysize * 3)
-    val block4: String = ciphertext.slice(keysize * 3, keysize * 4)
-
-    val distance1 = HexBytesUtil.hammingDistance(block1, block2).toDouble
-    val distance2 = HexBytesUtil.hammingDistance(block3, block4).toDouble
-
-    (distance1 + distance2) / 2 / keysize
-    */
+    // return the average of the normalized distances
+    hammingDistances.sum / hammingDistances.length
   }
 }
