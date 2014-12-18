@@ -9,7 +9,7 @@ object Challenge3 {
   }
 
   def decrypt(input: IndexedSeq[Byte]): String = {
-    val allBytes = (0 to 255).view.map(_.toByte)
+    val allBytes = (0 until 256).view.map(_.toByte)
 
     val best = allBytes.par.minBy(b => FrequencyAnalysis.englishScore(input.map(c => (c ^ b).toChar).mkString))
 
