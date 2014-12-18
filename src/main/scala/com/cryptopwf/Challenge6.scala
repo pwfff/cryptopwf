@@ -1,15 +1,19 @@
 package com.cryptopwf
 
+import sun.misc.BASE64Decoder
+
 import com.cryptopwf.util.FrequencyAnalysis
 import com.cryptopwf.util.HexBytesUtil
 
 object Challenge6 {
-  def breakRepeatingXOR(base64ciphertext: String, keysizes: Range = (2 to 255)): String = {
-    val ciphertext = HexBytesUtil.hex2bytes(base64ciphertext)
+  val decoder = new BASE64Decoder()
+  def breakRepeatingXOR(base64ciphertext: String, keysizes: Range = (2 to 40)): String = {
+    val ciphertext = decoder.decodeBuffer(base64ciphertext)
 
-    val keysizeGuesses = keysizes.sortBy(normalizedEditDistance(ciphertext.mkString, _)).take(3)
+    //val keysizeGuesses = keysizes.sortBy(-normalizedEditDistance(ciphertext.mkString, _)).take(10)
 
-    keysizeGuesses.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
+    //keysizeGuesses.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
+    keysizes.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
   }
 
   def tryKeySize(ciphertext: IndexedSeq[Byte], keysize: Int): String = {
@@ -20,6 +24,18 @@ object Challenge6 {
   }
 
   def normalizedEditDistance(ciphertext: String, keysize: Int): Double = {
+    val hammingDistances = ciphertext.grouped(keysize).grouped(2).map {
+      case g if (g.length > 1) => Some(HexBytesUtil.hammingDistance(g(0), g(1)).toDouble / keysize)
+      case _ => None
+    }.toIndexedSeq.flatten
+
+    (hammingDistances.sum.toDouble / hammingDistances.length) / keysize
+
+    val normalized = hammingDistances.sum / hammingDistances.length
+    println(normalized)
+    normalized
+
+    /*
     if (ciphertext.length < keysize * 4) throw new IllegalArgumentException("ciphertext must have at least four blocks of `keysize` length")
 
     val block1: String = ciphertext.slice(0, keysize)
@@ -31,5 +47,6 @@ object Challenge6 {
     val distance2 = HexBytesUtil.hammingDistance(block3, block4).toDouble
 
     (distance1 + distance2) / 2 / keysize
+    */
   }
 }
