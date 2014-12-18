@@ -42,10 +42,10 @@ object Challenge6 {
     val blocks = ciphertext.grouped(keysize).toIndexedSeq
 
     // get adjacent blocks
-    val adjacentBlocks = (blocks.drop(1) zip blocks).drop(1)
+    val adjacentBlocks = blocks.sliding(2)
 
     // for each adjacent pair of blocks, calculate the normalized hamming distance
-    val hammingDistances = adjacentBlocks.map(t => HexBytesUtil.normalizedHammingDistance(t._1, t._2)).toIndexedSeq
+    val hammingDistances = adjacentBlocks.map(t => HexBytesUtil.normalizedHammingDistance(t(0), t(1))).toIndexedSeq
 
     // return the average of the normalized distances
     hammingDistances.sum / hammingDistances.length
