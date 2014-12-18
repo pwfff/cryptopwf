@@ -14,11 +14,11 @@ object HexBytesUtil {
     bytes.map("%02x".format(_)).mkString
   }
 
-  def hammingDistance(a: String, b: String): Int = {
+  def hammingDistance(a: IndexedSeq[Byte], b: IndexedSeq[Byte]): Int = {
     (a zip b).map(t => JavaInteger.bitCount(t._1 ^ t._2)).sum
   }
 
-  def normalizedHammingDistance(a: String, b: String): Double = {
+  def normalizedHammingDistance(a: IndexedSeq[Byte], b: IndexedSeq[Byte]): Double = {
     hammingDistance(a, b).toDouble / math.min(a.length, b.length)
   }
 }
