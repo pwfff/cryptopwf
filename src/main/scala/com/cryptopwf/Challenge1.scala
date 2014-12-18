@@ -8,6 +8,6 @@ object Challenge1 {
 
   def hex2base64(hex: String): String = {
     val bytes = HexBytesUtil.hex2bytes(hex)
-    encoder.encode(bytes)
+    encoder.encode(bytes.toArray)
   }
 }

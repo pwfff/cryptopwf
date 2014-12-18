@@ -7,7 +7,7 @@ object Challenge2 {
     val bytes1 = HexBytesUtil.hex2bytes(hex1)
     val bytes2 = HexBytesUtil.hex2bytes(hex2)
 
-    val xored: Array[Byte] = (bytes1, bytes2).zipped map {(a, b) => (a ^ b).toByte}
+    val xored: IndexedSeq[Byte] = (bytes1, bytes2).zipped map {(a, b) => (a ^ b).toByte}
 
     HexBytesUtil.bytes2hex(xored)
   }

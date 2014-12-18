@@ -5,13 +5,15 @@ import com.cryptopwf.util.FrequencyAnalysis
 
 object Challenge3 {
   def decrypt(hexInput: String): String = {
-    val inputeBytes = HexBytesUtil.hex2bytes(hexInput)
+    decrypt(HexBytesUtil.hex2bytes(hexInput))
+  }
 
+  def decrypt(input: IndexedSeq[Byte]): String = {
     val allBytes = (0 to 255).view.map(_.toByte)
 
-    val best = allBytes.par.minBy(b => FrequencyAnalysis.englishScore(inputeBytes.map(c => (c ^ b).toChar).mkString))
+    val best = allBytes.par.minBy(b => FrequencyAnalysis.englishScore(input.map(c => (c ^ b).toChar).mkString))
 
-    val decrypted = inputeBytes.map(_ ^ best)
+    val decrypted = input.map(_ ^ best)
 
     decrypted.map(_.toChar).mkString
   }
