@@ -21,19 +21,21 @@ object FrequencyAnalysis {
   }
 
   def englishScore(text: String): Double = {
+    var score = 0.0;
+
     val stringCount = new Array[Int](28)
     text.foreach { c =>
       stringCount(charIndex(c)) += 1
+      if (c < 0 || c > 'z') score += 10
     }
 
     val stringFreq = stringCount map { _.asInstanceOf[Double] / text.length() }
 
-    var counter = 0.0;
     for (i <- 0 to 27) {
-      counter += Math.abs(englishLetterFreq(i) - stringFreq(i))
+      score += Math.abs(englishLetterFreq(i) - stringFreq(i))
     }
 
-    counter
+    score
   }
 
   def mostEnglishText(candidates: collection.GenSeq[String]): String = {
