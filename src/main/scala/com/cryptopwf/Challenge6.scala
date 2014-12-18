@@ -11,7 +11,7 @@ object Challenge6 {
     val ciphertext = decoder.decodeBuffer(base64ciphertext)
 
     // use the average normalized hamming distance of adjacent blocks to guess the keysize
-    val keysizeGuesses = keysizes.sortBy(normalizedEditDistance(ciphertext.mkString, _)) //.take(10)
+    val keysizeGuesses = keysizes.sortBy(averageNormalizedHammingDistance(ciphertext.mkString, _)) //.take(10)
 
     // brute-force decrypt each byte in the key for each likely keysize, take the most Englishy one
     keysizeGuesses.map(tryKeySize(ciphertext, _)).minBy(FrequencyAnalysis.englishScore(_))
@@ -37,7 +37,7 @@ object Challenge6 {
     paddedDecryptedBlocks.transpose.map(_.mkString).mkString.replaceAll("\0", "")
   }
 
-  def normalizedEditDistance(ciphertext: String, keysize: Int): Double = {
+  def averageNormalizedHammingDistance(ciphertext: String, keysize: Int): Double = {
     // group ciphertext into blocks of keysize length
     val blocks = ciphertext.grouped(keysize).toIndexedSeq
 
