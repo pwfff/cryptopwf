@@ -1,6 +1,5 @@
 package com.cryptopwf
 
-import com.cryptopwf.util.HexBytesUtil
 import com.cryptopwf.util.FrequencyAnalysis
 
 object Challenge4 {
