@@ -11,7 +11,11 @@ object Challenge7 {
   def decrypt(base64ciphertext: String, key: String): String = {
     val ciphertext = decoder.decodeBuffer(base64ciphertext)
 
-    val keySpec = new SecretKeySpec(key.getBytes, "AES")
+    decrypt(ciphertext, key.getBytes)
+  }
+
+  def decrypt(ciphertext: Array[Byte], key: Array[Byte]): String = {
+    val keySpec = new SecretKeySpec(key, "AES")
     cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
     cipher.doFinal(ciphertext).map(_.toChar).mkString
