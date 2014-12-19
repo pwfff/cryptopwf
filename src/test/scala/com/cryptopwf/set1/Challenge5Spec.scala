@@ -1,6 +1,8 @@
 import com.cryptopwf.set1.Challenge5
 import org.scalatest._
 
+import com.cryptopwf.util.Helpers._
+
 class Challenge5Spec extends FlatSpec with Matchers {
   "Challenge5" should "encrypt plaintext with repeating-key XOR" in {
     val plaintext = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
