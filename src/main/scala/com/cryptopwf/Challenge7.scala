@@ -1,0 +1,19 @@
+package com.cryptopwf
+
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+import sun.misc.BASE64Decoder
+
+object Challenge7 {
+  val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+  val decoder = new BASE64Decoder()
+
+  def decrypt(base64ciphertext: String, key: String): String = {
+    val ciphertext = decoder.decodeBuffer(base64ciphertext)
+
+    val keySpec = new SecretKeySpec(key.getBytes, "AES")
+    cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+    cipher.doFinal(ciphertext).map(_.toChar).mkString
+  }
+}
