@@ -2,7 +2,7 @@ import com.cryptopwf.Challenge6
 import org.scalatest._
 
 class Challenge6Spec extends FlatSpec with Matchers {
-  "Challenge6" should "brute force decrypt something xored by one byte" in {
+  "Challenge6" should "brute force decrypt something encrypted with repeating-key XOR" in {
     val base64ciphertext: String =
     """|HUIfTQsPAh9PE048GmllH0kcDk4TAQsHThsBFkU2AB4BSWQgVB0dQzNTTmVS
        |BgBHVBwNRU0HBAxTEjwMHghJGgkRTxRMIRpHKwAFHUdZEQQJAGQmB1MANxYG

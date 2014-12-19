@@ -7,6 +7,7 @@ import com.cryptopwf.util.HexBytesUtil
 
 object Challenge6 {
   val decoder = new BASE64Decoder()
+
   def breakRepeatingXOR(base64ciphertext: String, keysizes: Range = (2 to 40)): String = {
     val ciphertext = decoder.decodeBuffer(base64ciphertext)
 
