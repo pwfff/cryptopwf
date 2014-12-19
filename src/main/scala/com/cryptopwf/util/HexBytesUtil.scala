@@ -36,6 +36,10 @@ object Helpers {
     def repeatingXOR(key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
       (self zip (Stream continually key).flatten).map(t => (t._1 ^ t._2).toByte)
     }
+
+    def padPKCS7(to: Int): IndexedSeq[Byte] = {
+      self.padTo(to, (to - self.length).toByte)
+    }
   }
 
   implicit class RichString(val self: String) extends AnyVal {
@@ -49,6 +53,10 @@ object Helpers {
 
     def repeatingXOR(key: String): IndexedSeq[Byte] = {
       self.repeatingXOR(key.getBytes.toIndexedSeq)
+    }
+
+    def padPKCS7(to: Int): String = {
+      self.getBytes.toIndexedSeq.padPKCS7(to).map(_.toChar).mkString
     }
   }
 }
