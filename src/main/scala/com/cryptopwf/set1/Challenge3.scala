@@ -1,11 +1,11 @@
 package com.cryptopwf.set1
 
-import com.cryptopwf.util.HexBytesUtil
+import com.cryptopwf.util.Helpers._
 import com.cryptopwf.util.FrequencyAnalysis
 
 object Challenge3 {
   def decrypt(hexInput: String): String = {
-    decrypt(HexBytesUtil.hex2bytes(hexInput))
+    decrypt(hexInput.asHex)
   }
 
   def decrypt(input: IndexedSeq[Byte]): String = {
