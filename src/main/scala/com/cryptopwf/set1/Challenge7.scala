@@ -1,4 +1,4 @@
-package com.cryptopwf
+package com.cryptopwf.set1
 
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec

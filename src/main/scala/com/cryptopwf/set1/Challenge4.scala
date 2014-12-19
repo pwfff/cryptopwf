@@ -1,4 +1,4 @@
-package com.cryptopwf
+package com.cryptopwf.set1
 
 import com.cryptopwf.util.FrequencyAnalysis
 

@@ -1,4 +1,4 @@
-import com.cryptopwf.Challenge5
+import com.cryptopwf.set1.Challenge5
 import org.scalatest._
 
 class Challenge5Spec extends FlatSpec with Matchers {

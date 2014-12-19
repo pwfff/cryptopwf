@@ -1,4 +1,4 @@
-import com.cryptopwf.Challenge4
+import com.cryptopwf.set1.Challenge4
 import org.scalatest._
 
 import scala.io.Source
