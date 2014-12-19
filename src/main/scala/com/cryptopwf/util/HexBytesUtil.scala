@@ -22,3 +22,33 @@ object HexBytesUtil {
     hammingDistance(a, b).toDouble / math.min(a.length, b.length)
   }
 }
+
+object Helpers {
+  implicit class RichIndexedSeq(val self: IndexedSeq[Byte]) extends AnyVal {
+    def toHex(): String = {
+      HexBytesUtil.bytes2hex(self)
+    }
+
+    def ^(operand: IndexedSeq[Byte]): IndexedSeq[Byte] = {
+      (self, operand).zipped map {(a, b) => (a ^ b).toByte}
+    }
+
+    def repeatingXOR(key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
+      (self zip (Stream continually key).flatten).map(t => (t._1 ^ t._2).toByte)
+    }
+  }
+
+  implicit class RichString(val self: String) extends AnyVal {
+    def asHex(): IndexedSeq[Byte] = {
+      HexBytesUtil.hex2bytes(self)
+    }
+
+    def repeatingXOR(key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
+      self.getBytes.toIndexedSeq.repeatingXOR(key)
+    }
+
+    def repeatingXOR(key: String): IndexedSeq[Byte] = {
+      self.repeatingXOR(key.getBytes.toIndexedSeq)
+    }
+  }
+}
