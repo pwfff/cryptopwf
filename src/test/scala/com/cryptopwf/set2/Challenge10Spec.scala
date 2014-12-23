@@ -1,12 +1,13 @@
-import com.cryptopwf.set1.Challenge7
+import com.cryptopwf.set1.Challenge10
 import org.scalatest._
 
 import scala.io.Source
 
-class Challenge7Spec extends FlatSpec with Matchers {
-  "Challenge7" should "decrypt something with AES in ECB" in {
+class Challenge10Spec extends FlatSpec with Matchers {
+  "Challenge10" should "decrypt something with AES in CBC" in {
+    val base64ciphertext = Source.fromURL(getClass.getResource("/challenge-data/10.txt")).mkString
     val key = "YELLOW SUBMARINE"
-    val base64ciphertext = Source.fromURL(getClass.getResource("/challenge-data/7.txt")).mkString
+    val iv = "00000000000000000000000000000000"
 
     val result = """|I'm back and I'm ringin' the bell 
                     |A rockin' on the mike while the fly girls yell 
@@ -89,6 +90,6 @@ class Challenge7Spec extends FlatSpec with Matchers {
                     |Play that funky music 
                     |""".stripMargin + "\04\04\04\04"
 
-    Challenge7.decrypt(base64ciphertext, key) should be (result)
+    Challenge10.decrypt(base64ciphertext, key, iv) should be (result)
   }
 }
