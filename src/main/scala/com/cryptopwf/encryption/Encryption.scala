@@ -20,7 +20,7 @@ object ECB {
     encoder.encode(encryptedBytes)
   }
 
-  def encryptPadded(plaintext: Array[Byte], key: Array[Byte]): Array[Byte] = {
+  def encryptPadded(plaintext: IndexedSeq[Byte], key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
     val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
     val keySpec = new SecretKeySpec(key, "AES")
 
@@ -28,7 +28,7 @@ object ECB {
     cipher.doFinal(plaintext)
   }
 
-  def encrypt(plaintext: Array[Byte], key: Array[Byte]): Array[Byte] = {
+  def encrypt(plaintext: IndexedSeq[Byte], key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
     val cipher = Cipher.getInstance("AES/ECB/NoPadding")
     val keySpec = new SecretKeySpec(key, "AES")
 
@@ -42,7 +42,7 @@ object ECB {
     decrypt(ciphertext, key.getBytes).map(_.toChar).mkString
   }
 
-  def decrypt(ciphertext: Array[Byte], key: Array[Byte]): Array[Byte] = {
+  def decrypt(ciphertext: IndexedSeq[Byte], key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
     val cipher = Cipher.getInstance("AES/ECB/NoPadding")
     val keySpec = new SecretKeySpec(key, "AES")
 
@@ -56,11 +56,11 @@ object CBC {
   val encoder = new BASE64Encoder()
 
   def encrypt(plaintext: String, key: String, iv: String): String = {
-    encoder.encode(encrypt(plaintext.getBytes, key.getBytes, iv.asHex.toArray))
+    encoder.encode(encrypt(plaintext.getBytes, key.getBytes, iv.asHex))
   }
 
-  def encrypt(plaintext: Array[Byte], key: Array[Byte], iv: Array[Byte] = Array.fill[Byte](16)(0)): Array[Byte] = {
-    def encryptChunks(chunks: List[Array[Byte]], encryptedChunks: List[Array[Byte]] = List[Array[Byte]]()): List[Byte] = {
+  def encrypt(plaintext: IndexedSeq[Byte], key: IndexedSeq[Byte], iv: IndexedSeq[Byte] = Vector.fill[Byte](16)(0)): IndexedSeq[Byte] = {
+    def encryptChunks(chunks: List[IndexedSeq[Byte]], encryptedChunks: List[IndexedSeq[Byte]] = List[Vector[Byte]]()): List[Byte] = {
       chunks match {
         case List() => encryptedChunks.reverse.flatten
         case head :: rest => encryptedChunks match {
@@ -69,22 +69,22 @@ object CBC {
         }
       }
     }
-    
-    encryptChunks(plaintext.toIndexedSeq.padPKCS7(16).toArray.grouped(16).toList).toArray
+
+    encryptChunks(plaintext.padPKCS7(16).grouped(16).toList).toIndexedSeq
   }
 
   def decrypt(ciphertext: String, key: String, iv: String): String = {
-    decrypt(decoder.decodeBuffer(ciphertext), key.getBytes, iv.asHex.toArray).map(_.toChar).mkString
+    decrypt(decoder.decodeBuffer(ciphertext), key.getBytes, iv.asHex).map(_.toChar).mkString
   }
 
-  def decrypt(ciphertext: Array[Byte], key: Array[Byte], iv: Array[Byte] = Array.fill[Byte](16)(0)): Array[Byte] = {
-    def decryptChunks(lastChunk: Array[Byte], chunks: List[Array[Byte]], decryptedChunks: List[Array[Byte]] = List[Array[Byte]]()): List[Byte] = {
+  def decrypt(ciphertext: IndexedSeq[Byte], key: IndexedSeq[Byte], iv: IndexedSeq[Byte] = Vector.fill[Byte](16)(0)): IndexedSeq[Byte] = {
+    def decryptChunks(lastChunk: IndexedSeq[Byte], chunks: List[IndexedSeq[Byte]], decryptedChunks: List[IndexedSeq[Byte]] = List[Vector[Byte]]()): List[Byte] = {
       chunks match {
         case List() => decryptedChunks.reverse.flatten
         case head :: rest => decryptChunks(head, rest, (ECB.decrypt(head, key) ^ lastChunk) :: decryptedChunks)
       }
     }
 
-    decryptChunks(iv, ciphertext.grouped(16).toList).toArray
+    decryptChunks(iv, ciphertext.grouped(16).toList).toIndexedSeq
   }
 }

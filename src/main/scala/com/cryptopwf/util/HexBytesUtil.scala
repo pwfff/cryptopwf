@@ -7,7 +7,7 @@ import java.lang.{Integer=>JavaInteger}
 
 object HexBytesUtil {
   def hex2bytes(hex: String): IndexedSeq[Byte] = {
-    hex.replaceAll("[^0-9A-Fa-f]", "").sliding(2, 2).toArray.map(Integer.parseInt(_, 16).toByte)
+    hex.replaceAll("[^0-9A-Fa-f]", "").sliding(2, 2).toIndexedSeq.map(Integer.parseInt(_, 16).toByte)
   }
 
   def bytes2hex(bytes: IndexedSeq[Byte]): String = {

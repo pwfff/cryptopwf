@@ -1,13 +1,15 @@
 package com.cryptopwf.util
 
 object Helpers {
-  implicit class RichArray(val self: Array[Byte]) extends AnyVal {
-    def ^(operand: Array[Byte]): Array[Byte] = {
-      (self, operand).zipped map {(a, b) => (a ^ b).toByte}
-    }
-  }
+  implicit def indexedSeqToArray(indexedSeq: IndexedSeq[Byte]): Array[Byte] = indexedSeq.toArray
 
   implicit class RichIndexedSeq(val self: IndexedSeq[Byte]) extends AnyVal {
+  /*
+    def ^(operand: IndexedSeq[Byte]): IndexedSeq[Byte] = {
+      (self, operand).zipped map {(a, b) => (a ^ b).toByte}
+    }
+  */
+
     def toHex(): String = {
       HexBytesUtil.bytes2hex(self)
     }
@@ -37,7 +39,7 @@ object Helpers {
     }
 
     def repeatingXOR(key: String): IndexedSeq[Byte] = {
-      self.repeatingXOR(key.getBytes.toIndexedSeq)
+      self.repeatingXOR(key.getBytes)
     }
 
     def padPKCS7(to: Int): String = {

@@ -7,6 +7,6 @@ object Challenge1 {
   val encoder = new BASE64Encoder()
 
   def hex2base64(hex: String): String = {
-    encoder.encode(hex.asHex.toArray)
+    encoder.encode(hex.asHex)
   }
 }

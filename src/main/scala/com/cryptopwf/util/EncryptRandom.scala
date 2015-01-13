@@ -7,15 +7,15 @@ import util.Random
 object EncryptRandom {
   val generator = new Random()
 
-  def getBytes(length: Int): Array[Byte] = {
+  def getBytes(length: Int): IndexedSeq[Byte] = {
     val bytes = new Array[Byte](length)
     generator.nextBytes(bytes)
-    bytes
+    bytes.toVector
   }
 
   def randomEncryptionType(): EncryptionType.Value = if (generator.nextBoolean) EncryptionType.ECB else EncryptionType.CBC
 
-  def encryptRandom(input: Array[Byte], encryptionType: EncryptionType.Value=randomEncryptionType): (Array[Byte], EncryptionType.Value) = {
+  def encryptRandom(input: IndexedSeq[Byte], encryptionType: EncryptionType.Value=randomEncryptionType): (IndexedSeq[Byte], EncryptionType.Value) = {
     val key = getBytes(16)
     val iv = getBytes(16)
 
