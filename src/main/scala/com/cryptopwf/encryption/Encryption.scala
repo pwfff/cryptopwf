@@ -7,6 +7,10 @@ import javax.crypto.spec.SecretKeySpec
 import sun.misc.BASE64Decoder
 import sun.misc.BASE64Encoder
 
+object EncryptionType extends Enumeration {
+  val ECB, CBC = Value
+}
+
 object ECB {
   val decoder = new BASE64Decoder()
   val encoder = new BASE64Encoder()
@@ -14,6 +18,14 @@ object ECB {
   def encrypt(plaintext: String, key: String): String = {
     val encryptedBytes = encrypt(plaintext.getBytes, key.getBytes)
     encoder.encode(encryptedBytes)
+  }
+
+  def encryptPadded(plaintext: Array[Byte], key: Array[Byte]): Array[Byte] = {
+    val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+    val keySpec = new SecretKeySpec(key, "AES")
+
+    cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+    cipher.doFinal(plaintext)
   }
 
   def encrypt(plaintext: Array[Byte], key: Array[Byte]): Array[Byte] = {
@@ -58,7 +70,7 @@ object CBC {
       }
     }
     
-    encryptChunks(plaintext.grouped(16).toList).toArray
+    encryptChunks(plaintext.toIndexedSeq.padPKCS7(16).toArray.grouped(16).toList).toArray
   }
 
   def decrypt(ciphertext: String, key: String, iv: String): String = {

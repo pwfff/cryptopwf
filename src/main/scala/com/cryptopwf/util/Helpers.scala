@@ -21,7 +21,9 @@ object Helpers {
     }
 
     def padPKCS7(to: Int): IndexedSeq[Byte] = {
-      self.padTo(to, (to - self.length).toByte)
+      val paddedLength = ((self.length / to) + 1) * to
+      val paddingByte = (paddedLength - self.length).toByte
+      self.padTo(paddedLength, paddingByte)
     }
   }
 
