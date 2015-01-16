@@ -8,9 +8,7 @@ object EncryptRandom {
   val generator = new Random()
 
   def getBytes(length: Int): IndexedSeq[Byte] = {
-    val bytes = new Array[Byte](length)
-    generator.nextBytes(bytes)
-    bytes.toVector
+    Vector.fill[Byte](length)(generator.nextInt(255).toByte)
   }
 
   def randomEncryptionType(): EncryptionType.Value = if (generator.nextBoolean) EncryptionType.ECB else EncryptionType.CBC
