@@ -1,6 +1,12 @@
 package com.cryptopwf.util
 
+import sun.misc.BASE64Decoder
+import sun.misc.BASE64Encoder
+
 object Helpers {
+  val decoder = new BASE64Decoder()
+  val encoder = new BASE64Encoder()
+
   implicit def indexedSeqToArray(indexedSeq: IndexedSeq[Byte]): Array[Byte] = indexedSeq.toArray
 
   implicit class RichIndexedSeq(val self: IndexedSeq[Byte]) extends AnyVal {
@@ -12,6 +18,10 @@ object Helpers {
 
     def toHex(): String = {
       HexBytesUtil.bytes2hex(self)
+    }
+
+    def toBase64(): String = {
+      encoder.encode(self)
     }
 
     def ^(operand: IndexedSeq[Byte]): IndexedSeq[Byte] = {
@@ -32,6 +42,10 @@ object Helpers {
   implicit class RichString(val self: String) extends AnyVal {
     def asHex(): IndexedSeq[Byte] = {
       HexBytesUtil.hex2bytes(self)
+    }
+
+    def asBase64(): IndexedSeq[Byte] = {
+      decoder.decodeBuffer(self)
     }
 
     def repeatingXOR(key: IndexedSeq[Byte]): IndexedSeq[Byte] = {

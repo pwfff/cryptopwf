@@ -1,15 +1,12 @@
 package com.cryptopwf.set1
 
-import sun.misc.BASE64Decoder
-
 import com.cryptopwf.util.FrequencyAnalysis
 import com.cryptopwf.util.HexBytesUtil
+import com.cryptopwf.util.Helpers._
 
 object Challenge6 {
-  val decoder = new BASE64Decoder()
-
   def breakRepeatingXOR(base64ciphertext: String, keysizes: Range = (2 to 40)): String = {
-    val ciphertext = decoder.decodeBuffer(base64ciphertext)
+    val ciphertext = base64ciphertext.asBase64
 
     // use the average normalized hamming distance of adjacent blocks to guess the keysize
     val bestKeysize = keysizes.minBy(averageNormalizedHammingDistance(ciphertext, _))

@@ -4,20 +4,15 @@ import com.cryptopwf.util.Helpers._
 
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-import sun.misc.BASE64Decoder
-import sun.misc.BASE64Encoder
 
 object EncryptionType extends Enumeration {
   val ECB, CBC = Value
 }
 
 object ECB {
-  val decoder = new BASE64Decoder()
-  val encoder = new BASE64Encoder()
-
   def encrypt(plaintext: String, key: String): String = {
     val encryptedBytes = encrypt(plaintext.getBytes, key.getBytes)
-    encoder.encode(encryptedBytes)
+    encryptedBytes.toBase64
   }
 
   def encryptPadded(plaintext: IndexedSeq[Byte], key: IndexedSeq[Byte]): IndexedSeq[Byte] = {
@@ -37,7 +32,7 @@ object ECB {
   }
 
   def decrypt(base64ciphertext: String, key: String): String = {
-    val ciphertext = decoder.decodeBuffer(base64ciphertext)
+    val ciphertext = base64ciphertext.asBase64
 
     decrypt(ciphertext, key.getBytes).map(_.toChar).mkString
   }
@@ -52,11 +47,8 @@ object ECB {
 }
 
 object CBC {
-  val decoder = new BASE64Decoder()
-  val encoder = new BASE64Encoder()
-
   def encrypt(plaintext: String, key: String, iv: String): String = {
-    encoder.encode(encrypt(plaintext.getBytes, key.getBytes, iv.asHex))
+    encrypt(plaintext.getBytes, key.getBytes, iv.asHex).toBase64
   }
 
   def encrypt(plaintext: IndexedSeq[Byte], key: IndexedSeq[Byte], iv: IndexedSeq[Byte] = Vector.fill[Byte](16)(0)): IndexedSeq[Byte] = {
@@ -74,7 +66,7 @@ object CBC {
   }
 
   def decrypt(ciphertext: String, key: String, iv: String): String = {
-    decrypt(decoder.decodeBuffer(ciphertext), key.getBytes, iv.asHex).map(_.toChar).mkString
+    decrypt(ciphertext.asBase64, key.getBytes, iv.asHex).map(_.toChar).mkString
   }
 
   def decrypt(ciphertext: IndexedSeq[Byte], key: IndexedSeq[Byte], iv: IndexedSeq[Byte] = Vector.fill[Byte](16)(0)): IndexedSeq[Byte] = {
