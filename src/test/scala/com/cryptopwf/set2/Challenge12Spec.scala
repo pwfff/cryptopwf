@@ -30,7 +30,7 @@ class Challenge12Spec extends FlatSpec with Matchers {
                     |With my rag-top down so my hair can blow
                     |The girlies on standby waving just to say hi
                     |Did you stop? No, I just drove by
-                    |""".stripMargin + "\01"
+                    |""".stripMargin + "\u0001"
 
     val oracle = Challenge12.encryptionOracle(_: IndexedSeq[Byte], unknownPlaintext, key)
 

@@ -29,10 +29,10 @@ object Challenge6 {
     val decryptedBlocks = tBlocks.par.map(Challenge3.decrypt)
 
     // pad for second transpose
-    val paddedDecryptedBlocks = decryptedBlocks.map(_.padTo(math.ceil(ciphertext.length.toDouble / keysize).toInt, '\0'))
+    val paddedDecryptedBlocks = decryptedBlocks.map(_.padTo(math.ceil(ciphertext.length.toDouble / keysize).toInt, '\u0000'))
 
     // transpose and strip null bytes
-    paddedDecryptedBlocks.transpose.map(_.mkString).mkString.replaceAll("\0", "")
+    paddedDecryptedBlocks.transpose.map(_.mkString).mkString.replaceAll("\u0000", "")
   }
 
   def averageNormalizedHammingDistance(ciphertext: IndexedSeq[Byte], keysize: Int): Double = {

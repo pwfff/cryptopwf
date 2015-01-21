@@ -88,7 +88,7 @@ class Challenge10Spec extends FlatSpec with Matchers {
                     |Play that funky music A little louder now 
                     |Play that funky music, white boy Come on, Come on, Come on 
                     |Play that funky music 
-                    |""".stripMargin + "\04\04\04\04"
+                    |""".stripMargin + "\u0004\u0004\u0004\u0004"
 
     Challenge10.decrypt(base64ciphertext, key, iv) should be (result)
   }
