@@ -2,6 +2,8 @@ package com.cryptopwf.encryption
 
 import com.cryptopwf.util.Helpers._
 
+import scala.annotation.tailrec
+
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
@@ -70,7 +72,7 @@ object CBC {
   }
 
   def decrypt(ciphertext: IndexedSeq[Byte], key: IndexedSeq[Byte], iv: IndexedSeq[Byte] = Vector.fill[Byte](16)(0)): IndexedSeq[Byte] = {
-    def decryptChunks(lastChunk: IndexedSeq[Byte], chunks: List[IndexedSeq[Byte]], decryptedChunks: List[IndexedSeq[Byte]] = List[Vector[Byte]]()): List[Byte] = {
+    @tailrec def decryptChunks(lastChunk: IndexedSeq[Byte], chunks: List[IndexedSeq[Byte]], decryptedChunks: List[IndexedSeq[Byte]] = List[Vector[Byte]]()): List[Byte] = {
       chunks match {
         case List() => decryptedChunks.reverse.flatten
         case head :: rest => decryptChunks(head, rest, (ECB.decrypt(head, key) ^ lastChunk) :: decryptedChunks)
